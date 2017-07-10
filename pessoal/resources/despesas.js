@@ -1,17 +1,33 @@
 var mongoose = require('mongoose');
-
 var modelo = mongoose.model('despesas');
+var parseParams = require('../utils/parse-params');
 
 module.exports = function (app) {
 
-  app.get('/api/despesas', function(req, resp) {
-        modelo.find()
-            .then(function(dados){
-                resp.json(dados);
-            }, function(erro){
-                resp.status(500).json(erro);
-            });
-  });
+  app.get('/api/despesas', function (req, resp) {
+    var fields = {
+      score: { $meta: 'textScore' },
+      _id: 1,
+      descricao: 1,
+      valor: 1,
+      data_vencimento: 1,
+      data_pagamento: 1,
+      parcela: 1,
+      qtd_parcela: 1,
+      mes: 1,
+      ano: 1,
+      situacao: 1,
+      conta: 1
+    };
+
+    modelo.find(parseParams(req.query.filter), fields, { sort: { score: {$meta: 'textScore'}, descricao: 1 } })
+      .then(function (dados) {
+        resp.json(dados);
+      }, function (erro) {
+        resp.status(500).json(erro);
+      })
+      
+  });  
 
   app.get('/api/despesas/:id', function(req, resp) {
         modelo.findById(req.params.id)

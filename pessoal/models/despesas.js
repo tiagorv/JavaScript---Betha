@@ -52,4 +52,6 @@ var modelo = new Schema({
   }  
 });
 
+modelo.index({ '$**': 'text' });
+
 mongoose.model('despesas', modelo);

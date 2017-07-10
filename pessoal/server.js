@@ -4,6 +4,8 @@ var database = require('./config/database');
 
 database('mongodb://localhost/pessoal');
 
-http.createServer(app).listen(8080, function(){
-    console.log('Servidor Iniciado com Sucesso!!!')
-})
+http
+    .createServer(app)
+    .listen(8080, function(){
+        console.log('Servidor Iniciado com Sucesso na Porta 8080!!!')
+    })

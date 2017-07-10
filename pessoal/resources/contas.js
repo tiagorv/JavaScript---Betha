@@ -1,17 +1,27 @@
 var mongoose = require('mongoose');
-
 var contasModel = mongoose.model('contas');
+var parseParams = require('../utils/parse-params');
 
 module.exports = function (app) {
 
-  app.get('/api/contas', function(req, resp) {
-        contasModel.find()
-            .then(function(dados){
-                resp.json(dados);
-            }, function(erro){
-                resp.status(500).json(erro);
-            });
-  });
+  app.get('/api/contas', function (req, resp) {
+    var fields = {
+      score: { $meta: 'textScore' },
+      _id: 1,
+      banco: 1,
+      numero: 1,
+      titular: 1,
+      saldo: 1
+    };
+
+    contasModel.find(parseParams(req.query.filter), fields, { sort: { score: {$meta: 'textScore'}, banco: 1 } })
+      .then(function (dados) {
+        resp.json(dados);
+      }, function (erro) {
+        resp.status(500).json(erro);
+      })
+      
+  });  
 
   app.get('/api/contas/:id', function(req, resp) {
         contasModel.findById(req.params.id)

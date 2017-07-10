@@ -37,4 +37,5 @@ var modelo = new Schema({
   }  
 });
 
+modelo.index({ '$**': 'text' });
 mongoose.model('receitas', modelo);
